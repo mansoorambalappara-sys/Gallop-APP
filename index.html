@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GALLOP Sports Meet 2026</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Noto+Sans+Malayalam:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', 'Noto Sans Malayalam', sans-serif;
+        }
+        /* 3D Title effect */
+        .text-3d {
+            text-shadow: 0 1px 0 #ccc, 
+                         0 2px 0 #c9c9c9, 
+                         0 3px 0 #bbb, 
+                         0 4px 0 #b9b9b9, 
+                         0 5px 0 #aaa, 
+                         0 6px 1px rgba(0,0,0,.1), 
+                         0 0 5px rgba(0,0,0,.1), 
+                         0 1px 3px rgba(0,0,0,.3), 
+                         0 3px 5px rgba(0,0,0,.2), 
+                         0 5px 10px rgba(0,0,0,.25);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <header class="bg-gradient-to-b from-slate-900 to-slate-950 border-b border-slate-800 shadow-2xl py-6 px-4 sticky top-0 z-40 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-md mx-auto flex flex-col items-center text-center">
+            <span class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-[11px] px-3 py-1 rounded-full font-bold uppercase tracking-widest mb-2">GLPS MUNDEKARAD</span>
+            
+            <!-- 3D Gallop Title -->
+            <h1 class="text-4xl sm:text-5xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-500 text-3d uppercase my-1">
+                GALLOP
+            </h1>
+            <p class="text-slate-400 text-xs font-medium">സ്കൂൾ കായികമേള രജിസ്ട്രേഷൻ പോർട്ടൽ 2026-27</p>
+            
+            <!-- Navigation Tabs -->
+            <div class="flex gap-1.5 mt-4 bg-slate-900 p-1 rounded-2xl border border-slate-800 w-full max-w-xs shadow-inner">
+                <button onclick="switchTab('register')" id="tab-register" class="flex-1 py-2 bg-indigo-600 text-white rounded-xl font-semibold text-xs shadow transition">രജിസ്ട്രേഷൻ</button>
+                <button onclick="switchTab('list')" id="tab-list" class="flex-1 py-2 text-slate-400 rounded-xl font-semibold text-xs transition hover:text-white">ലിസ്റ്റ്</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto w-full p-4 my-2 flex-grow">
+        
+        <!-- Registration View -->
+        <div id="view-register" class="space-y-4">
+            <div class="bg-slate-900/90 rounded-3xl shadow-2xl p-5 border border-slate-800/80 backdrop-blur-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-base font-bold text-slate-200 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                        മത്സര രജിസ്ട്രേഷൻ ഫോം
+                    </h2>
+                    <button onclick="openAdminLogin()" id="admin-btn-status" class="text-xs bg-slate-800 hover:bg-slate-700 text-indigo-400 border border-indigo-500/20 px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <span id="admin-btn-text">അഡ്മിൻ ലോഗിൻ</span>
+                    </button>
+                </div>
+
+                <form id="reg-form" onsubmit="handleRegistration(event)" class="space-y-4">
+                    
+                    <!-- House Selection -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1.5">ഹൗസ് തിരഞ്ഞെടുക്കുക (House)</label>
+                        <select id="select-house" onchange="updateStudentsList()" required class="w-full p-3 rounded-2xl border border-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-950 text-sm font-medium text-slate-200">
+                            <option value="">-- ഹൗസ് തിരഞ്ഞെടുക്കുക --</option>
+                            <option value="BLUE HOUSE">💙 ബ്ലൂ ഹൗസ് (Blue House)</option>
+                            <option value="GREEN HOUSE">💚 ഗ്രീൻ ഹൗസ് (Green House)</option>
+                            <option value="RED HOUSE">❤️ റെഡ് ഹൗസ് (Red House)</option>
+                            <option value="YELLOW HOUSE">💛 യെല്ലോ ഹൗസ് (Yellow House)</option>
+                        </select>
+                    </div>
+
+                    <!-- Student Selection -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1.5">കുട്ടിയുടെ പേര് (Student Name)</label>
+                        <select id="select-student" onchange="fillStudentDetails()" required disabled class="w-full p-3 rounded-2xl border border-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-950 text-sm font-medium text-slate-200 disabled:opacity-50">
+                            <option value="">-- ആദ്യം ഹൗസ് തിരഞ്ഞെടുക്കുക --</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- Class Display -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">ക്ലാസ്സ് / സ്ഥാനം</label>
+                            <input type="text" id="input-class" readonly placeholder="ഓട്ടോമാറ്റിക്" class="w-full p-3 rounded-2xl border border-slate-800 bg-slate-950/60 text-slate-300 text-xs font-medium">
+                        </div>
+
+                        <!-- Gender / Category -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">വിഭാഗം / ലിംഗം</label>
+                            <select id="select-gender" onchange="handleGenderChange()" required class="w-full p-3 rounded-2xl border border-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-950 text-sm font-medium text-slate-200">
+                                <option value="">-- തിരഞ്ഞെടുക്കുക --</option>
+                                <option value="Boy">ആൺകുട്ടി (Boy)</option>
+                                <option value="Girl">പെൺകുട്ടി (Girl)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Events Checkbox list -->
+                    <div class="pt-2 border-t border-slate-800">
+                        <label class="block text-xs font-bold text-slate-300 mb-1">മത്സര ഇനങ്ങൾ (Select Events)</label>
+                        <p class="text-[11px] text-slate-500 mb-3">ആൺകുട്ടികൾക്കും പെൺകുട്ടികൾക്കുമുള്ള മത്സരങ്ങൾ സ്വയം ലോക്ക്/അൺലോക്ക് ആകും.</p>
+                        
+                        <div class="grid grid-cols-1 gap-2 max-h-56 overflow-y-auto pr-1" id="events-checkbox-container">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 pt-2">
+                        <button type="reset" onclick="resetFormState()" class="flex-1 py-3 rounded-2xl border border-slate-700 text-slate-400 text-xs font-semibold hover:bg-slate-800 transition">റദ്ദാക്കുക</button>
+                        <button type="submit" class="flex-2 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-pink-600 text-white text-xs font-bold shadow-lg shadow-indigo-500/30 hover:opacity-95 transition">രജിസ്റ്റർ ചെയ്യുക</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="view-list" class="hidden space-y-4">
+            <div class="bg-slate-900/90 rounded-3xl shadow-2xl p-5 border border-slate-800/80 backdrop-blur-sm">
+                <div class="flex flex-col gap-3 mb-4">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-base font-bold text-slate-200">രജിസ്റ്റർ ചെയ്ത കുട്ടികൾ</h2>
+                        <span id="reg-count-badge" class="bg-indigo-500/20 text-indigo-400 text-xs px-2.5 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-2">
+                        <select id="filter-house" onchange="renderRegisteredList()" class="p-2.5 rounded-xl border border-slate-700 text-xs bg-slate-950 text-slate-200">
+                            <option value="">എല്ലാ ഹൗസുകളും</option>
+                            <option value="BLUE HOUSE">Blue House</option>
+                            <option value="GREEN HOUSE">Green House</option>
+                            <option value="RED HOUSE">Red House</option>
+                            <option value="YELLOW HOUSE">Yellow House</option>
+                        </select>
+                        
+                        <!-- Admin Only Print Section Notice & Button -->
+                        <div id="admin-print-panel" class="hidden bg-emerald-950/40 border border-emerald-500/30 rounded-2xl p-3 space-y-2 mt-2">
+                            <p class="text-[11px] text-emerald-300 font-medium text-center">✓ അഡ്മിൻ പ്രവേശനം സജീവം. ഓരോ ഐറ്റംസിലെയും ബോയ്സ്/ഗേൾസ് ക്ലാസ് തിരിച്ചുള്ള A4 ഗ്രിഡ് റിപ്പോർട്ട് പ്രിന്റ് ചെയ്യാം.</p>
+                            <button onclick="printA4GridPDFReport()" class="w-full px-3 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-xs font-bold shadow-lg hover:opacity-90 transition flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                ഐറ്റം & ക്ലാസ് തിരിച്ച് A4 ഗ്രിഡ് പ്രിന്റ് / PDF
+                            </button>
+                        </div>
+                        <div id="non-admin-print-notice" class="bg-slate-950/60 border border-slate-800 rounded-2xl p-3 text-center">
+                            <p class="text-[11px] text-slate-400">അഡ്മിൻ ലോഗിൻ ചെയ്താൽ മാത്രമാണ് A4 ഗ്രിഡ് ഐറ്റം റിപ്പോർട്ട് പ്രിന്റ് ചെയ്യാൻ കഴിയുക.</p>
+                            <button onclick="openAdminLogin()" class="mt-2 text-xs text-indigo-400 font-bold underline hover:text-indigo-300">അഡ്മിൻ ലോഗിൻ ചെയ്യുക</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3 max-h-[50vh] overflow-y-auto pr-1" id="registered-cards-container">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-xs w-full shadow-2xl text-center space-y-4">
+            <div id="modal-icon" class="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-lg font-bold">✓</div>
+            <h3 id="modal-title" class="text-base font-bold text-slate-100">സന്ദേശം</h3>
+            <p id="modal-desc" class="text-xs text-slate-400">വിവരങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു.</p>
+            <button onclick="closeModal()" class="w-full py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow hover:bg-indigo-500 transition">ശരി</button>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal without password hint -->
+    <div id="admin-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-xs w-full shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-sm font-bold text-slate-200">അഡ്മിൻ ലോഗിൻ</h3>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-200">✕</button>
+            </div>
+            <p class="text-xs text-slate-400">റിപ്പോർട്ട് പ്രിന്റ് ചെയ്യാൻ അഡ്മിൻ പാസ്‌വേഡ് നൽകുക.</p>
+            <input type="password" id="admin-pass" placeholder="പാസ്‌വേഡ് നൽകുക" class="w-full p-3 rounded-xl border border-slate-700 bg-slate-950 text-xs text-slate-200 focus:ring-2 focus:ring-indigo-500">
+            <div class="flex gap-2">
+                <button onclick="closeAdminModal()" class="flex-1 py-2 rounded-xl bg-slate-800 text-xs font-semibold text-slate-400">ക്യാൻസൽ</button>
+                <button onclick="verifyAdmin()" class="flex-1 py-2 rounded-xl bg-indigo-600 text-xs font-bold text-white shadow">ലോഗിൻ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Full database of all 4 houses
+        const houseData = {
+            "BLUE HOUSE": [
+                { id: 1, name: "MUHAMMED HASHIM V", classRole: "Captain" },
+                { id: 2, name: "SHAHMA PK", classRole: "Vice Captain" },
+                { id: 3, name: "MUHAMMED RAZAN P", classRole: "Class 4" },
+                { id: 4, name: "HISANA FATHIMA C K", classRole: "Class 4" },
+                { id: 5, name: "MUHAMMED RAIHAN N", classRole: "Class 4" },
+                { id: 6, name: "FATHIMA HAFILA V", classRole: "Class 3" },
+                { id: 7, name: "MUHAMMED MUSTHAFA", classRole: "Class 3" },
+                { id: 8, name: "MUHAMMED AMJAD PP", classRole: "Class 3" },
+                { id: 9, name: "ANSAF M K", classRole: "Class 3" },
+                { id: 10, name: "MUHAMMED RISWAN P", classRole: "Class 2" },
+                { id: 11, name: "FATHIMA MUFEEDA", classRole: "Class 2" },
+                { id: 12, name: "AYISHA HANA C M", classRole: "Class 2" },
+                { id: 13, name: "NISHBA FATHIMA C", classRole: "Class 2" },
+                { id: 14, name: "HISHAM PP", classRole: "Class 1" },
+                { id: 15, name: "FIDHA FATHIMA C", classRole: "Class 1" },
+                { id: 16, name: "FATHIMA ISHA V", classRole: "Class 1" },
+                { id: 17, name: "AYISHA MEHRIN C", classRole: "Class 1" },
+                { id: 18, name: "MUHAMMED HAYAN V", classRole: "Pre-Primary" },
+                { id: 19, name: "RITHUNANDA V", classRole: "Pre-Primary" },
+                { id: 20, name: "MUHAMMED RIHAN C", classRole: "Pre-Primary" },
+                { id: 21, name: "MUHAMMED RAYHAN A", classRole: "Pre-Primary" },
+                { id: 22, name: "MUHAMMED ZAYAN N", classRole: "Pre-Primary" },
+                { id: 23, name: "MUHAMMED RAYAN V", classRole: "Pre-Primary" },
+                { id: 24, name: "MUHAMMED HAMDHAN KP", classRole: "Pre-Primary" },
+                { id: 25, name: "MAHIBA P", classRole: "Pre-Primary" }
+            ],
+            "GREEN HOUSE": [
+                { id: 1, name: "AHMMED NAJIL V", classRole: "Captain" },
+                { id: 2, name: "NIYA FATHIMA K P", classRole: "Vice Captain" },
+                { id: 3, name: "MINYA FATHIMA C K", classRole: "Class 4" },
+                { id: 4, name: "FAHMA FATHIMA C", classRole: "Class 4" },
+                { id: 5, name: "ALEENA AP", classRole: "Class 3" },
+                { id: 6, name: "MUHAMMED MINHAJ P", classRole: "Class 3" },
+                { id: 7, name: "MUHAMMED SHAMMAS M C", classRole: "Class 3" },
+                { id: 8, name: "MUHAMMED HISHAM C", classRole: "Class 3" },
+                { id: 9, name: "RIDHA FATHIMA N", classRole: "Class 3" },
+                { id: 10, name: "NISHAN V", classRole: "Class 2" },
+                { id: 11, name: "MUHAMMED AFNAS K", classRole: "Class 2" },
+                { id: 12, name: "FATHIMA RAZANA P", classRole: "Class 2" },
+                { id: 13, name: "AIRA FATHIMA K", classRole: "Class 2" },
+                { id: 14, name: "MUHAMMED RAZAN AR", classRole: "Class 1" },
+                { id: 15, name: "MUHAMMED RISWAN P", classRole: "Class 1" },
+                { id: 16, name: "RABEEUL RASHAAD K", classRole: "Class 1" },
+                { id: 17, name: "FATHIMA HENZA", classRole: "Pre-Primary" },
+                { id: 18, name: "SIYA MEHREE K", classRole: "Pre-Primary" },
+                { id: 19, name: "MUHAMMED HASHIR CK", classRole: "Pre-Primary" },
+                { id: 20, name: "MUHAMMED HASHIR CM", classRole: "Pre-Primary" },
+                { id: 21, name: "MUHAMMED RIZAN C", classRole: "Pre-Primary" },
+                { id: 22, name: "FATHIMATH JANNA", classRole: "Pre-Primary" },
+                { id: 23, name: "FATHIMA LIYA V", classRole: "Pre-Primary" },
+                { id: 24, name: "NAFIH V", classRole: "Pre-Primary" },
+                { id: 25, name: "MUHAMMED HAMDHAN K", classRole: "Pre-Primary" }
+            ],
+            "RED HOUSE": [
+                { id: 1, name: "MUHAMMED SHARIF MC", classRole: "Captain" },
+                { id: 2, name: "FATHIMA VAFA", classRole: "Vice Captain" },
+                { id: 3, name: "MUHAMMED RIZAN C", classRole: "Class 4" },
+                { id: 4, name: "SILVA FATHIMA C", classRole: "Class 4" },
+                { id: 5, name: "ABDULLA MINHAJ CT", classRole: "Class 4" },
+                { id: 6, name: "MINHA FATHIMA P", classRole: "Class 3" },
+                { id: 7, name: "SHIHA FATHIMA C T", classRole: "Class 3" },
+                { id: 8, name: "MIFTHAH KC", classRole: "Class 3" },
+                { id: 9, name: "MUHAMMED RAZAN PP", classRole: "Class 3" },
+                { id: 10, name: "ARYANANDA B", classRole: "Class 2" },
+                { id: 11, name: "FATHIMA MEHRIN K", classRole: "Class 2" },
+                { id: 12, name: "MUHAMMED ASLAM K", classRole: "Class 2" },
+                { id: 13, name: "MUHAMMED TAMIM C", classRole: "Class 2" },
+                { id: 14, name: "AL AMEEN PS", classRole: "Class 1" },
+                { id: 15, name: "FATHIMATH CM", classRole: "Class 1" },
+                { id: 16, name: "HIBA FATHIMA", classRole: "Class 1" },
+                { id: 17, name: "AYISHA RIYA C", classRole: "Class 1" },
+                { id: 18, name: "FATHIMA AMEENA V", classRole: "Pre-Primary" },
+                { id: 19, name: "B MUHAMMED ZAYAN E K", classRole: "Pre-Primary" },
+                { id: 20, name: "FATHIMA RIFA P", classRole: "Pre-Primary" },
+                { id: 21, name: "MUHAMMED IZAN V", classRole: "Pre-Primary" },
+                { id: 22, name: "HENZA FATHIMA V", classRole: "Pre-Primary" },
+                { id: 23, name: "AYISHA RAZANA K", classRole: "Pre-Primary" },
+                { id: 24, name: "RUDRAV DK", classRole: "Pre-Primary" },
+                { id: 25, name: "IVAN ZAIN C", classRole: "Pre-Primary" }
+            ],
+            "YELLOW HOUSE": [
+                { id: 1, name: "JADUL HAQUE K", classRole: "Captain" },
+                { id: 2, name: "AJWA FATHIMA C", classRole: "Vice Captain" },
+                { id: 3, name: "FATHIMA SWAFA", classRole: "Class 4" },
+                { id: 4, name: "FATHIMA MEHRIN C", classRole: "Class 4" },
+                { id: 5, name: "MUHAMMED MINHAJ NF", classRole: "Class 3" },
+                { id: 6, name: "FATHIMA HAYA PP", classRole: "Class 3" },
+                { id: 7, name: "RABEEH C", classRole: "Class 3" },
+                { id: 8, name: "FATHIMA RIFA N", classRole: "Class 3" },
+                { id: 9, name: "ALAYNA FATHIMA PJ", classRole: "Class 2" },
+                { id: 10, name: "DHRUVA DK", classRole: "Class 2" },
+                { id: 11, name: "MUHAMMED SHAHABAS KP", classRole: "Class 2" },
+                { id: 12, name: "FATHIMA RAZANA", classRole: "Class 1" },
+                { id: 13, name: "MARJAANAH K", classRole: "Class 1" },
+                { id: 14, name: "FATHIMA NASHWA V", classRole: "Class 1" },
+                { id: 15, name: "FAIHA FATHIMA", classRole: "Class 1" },
+                { id: 16, name: "RAJIHALI", classRole: "Pre-Primary" },
+                { id: 17, name: "AYSHA NOURIN V", classRole: "Pre-Primary" },
+                { id: 18, name: "MUHAMMED RAZAN C", classRole: "Pre-Primary" },
+                { id: 19, name: "AYZAL ISHWA V", classRole: "Pre-Primary" },
+                { id: 20, name: "HAMBALA BATHOOL N", classRole: "Pre-Primary" },
+                { id: 21, name: "ADHIJIT SM", classRole: "Pre-Primary" },
+                { id: 22, name: "MUHAMMED ESHAAN N", classRole: "Pre-Primary" },
+                { id: 23, name: "SAINABA NUHA", classRole: "Pre-Primary" },
+                { id: 24, name: "MIZNA FATHIMA", classRole: "Pre-Primary" }
+            ]
+        };
+
+        const sportsEvents = [
+            "50 മീറ്റർ ഓട്ടം (50m Race)",
+            "100 മീറ്റർ ഓട്ടമത്സരം (100m Race)",
+            "മ്യൂസിക്കൽ ചെയർ (Musical Chair)",
+            "സാക്ക് റൈസ് (Sack Race)",
+            "4x50 റിലേ മത്സരം (4x50m Relay)",
+            "4x100 റിലേ മത്സരം (4x100m Relay)",
+            "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം (Bottle Filling)",
+            "ലെമൺ സ്പൂൺ റൈസ് (Lemon Spoon)",
+            "സ്കിപ്പിംഗ് (Skipping)",
+            "പൊട്ടാറ്റോ പിക്കിംഗ് (Potato Picking)",
+            "വൺ ലെഗ് റൈസ് (One Leg Race)"
+        ];
+
+        let isAdminLoggedIn = false;
+
+        window.onload = function() {
+            renderEventsCheckboxes();
+            renderRegisteredList();
+            updateAdminUI();
+        };
+
+        function renderEventsCheckboxes() {
+            const container = document.getElementById('events-checkbox-container');
+            container.innerHTML = sportsEvents.map((event, index) => `
+                <label id="label-event-${index}" class="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-800 bg-slate-950/40 hover:bg-slate-800/50 cursor-pointer transition text-xs font-medium text-slate-300">
+                    <input type="checkbox" name="events" value="${event}" class="w-4 h-4 text-indigo-600 rounded border-slate-700 bg-slate-900 focus:ring-indigo-500">
+                    <span>${event}</span>
+                </label>
+            `).join('');
+        }
+
+        function handleGenderChange() {
+            const gender = document.getElementById('select-gender').value;
+            const checkboxes = document.querySelectorAll('input[name="events"]');
+
+            checkboxes.forEach(cb => {
+                const parentLabel = cb.closest('label');
+                const eventName = cb.value;
+
+                cb.disabled = false;
+                parentLabel.classList.remove('opacity-40', 'bg-slate-900', 'cursor-not-allowed');
+
+                if (gender === 'Boy') {
+                    // Lock Skipping and One Leg Race for Boys
+                    if (eventName.includes('സ്കിപ്പിംഗ്') || eventName.includes('വൺ ലെഗ് റൈസ്')) {
+                        cb.checked = false;
+                        cb.disabled = true;
+                        parentLabel.classList.add('opacity-40', 'bg-slate-900', 'cursor-not-allowed');
+                    }
+                } else if (gender === 'Girl') {
+                    // Lock Sack Race and Potato Picking for Girls
+                    if (eventName.includes('സാക്ക് റൈസ്') || eventName.includes('പൊട്ടാറ്റോ പിക്കിംഗ്')) {
+                        cb.checked = false;
+                        cb.disabled = true;
+                        parentLabel.classList.add('opacity-40', 'bg-slate-900', 'cursor-not-allowed');
+                    }
+                }
+            });
+        }
+
+        function switchTab(tab) {
+            const registerView = document.getElementById('view-register');
+            const listView = document.getElementById('view-list');
+            const tabReg = document.getElementById('tab-register');
+            const tabList = document.getElementById('tab-list');
+
+            if(tab === 'register') {
+                registerView.classList.remove('hidden');
+                listView.classList.add('hidden');
+                tabReg.className = "flex-1 py-2 bg-indigo-600 text-white rounded-xl font-semibold text-xs shadow transition";
+                tabList.className = "flex-1 py-2 text-slate-400 rounded-xl font-semibold text-xs transition hover:text-white";
+            } else {
+                registerView.classList.add('hidden');
+                listView.classList.remove('hidden');
+                tabList.className = "flex-1 py-2 bg-indigo-600 text-white rounded-xl font-semibold text-xs shadow transition";
+                tabReg.className = "flex-1 py-2 text-slate-400 rounded-xl font-semibold text-xs transition hover:text-white";
+                renderRegisteredList();
+            }
+        }
+
+        function updateStudentsList() {
+            const house = document.getElementById('select-house').value;
+            const studentSelect = document.getElementById('select-student');
+            document.getElementById('input-class').value = '';
+            
+            studentSelect.innerHTML = '<option value="">-- കുട്ടിയെ തിരഞ്ഞെടുക്കുക --</option>';
+            
+            if(!house || !houseData[house]) {
+                studentSelect.disabled = true;
+                return;
+            }
+
+            studentSelect.disabled = false;
+            houseData[house].forEach(student => {
+                const opt = document.createElement('option');
+                opt.value = student.name;
+                opt.textContent = `${student.name} (${student.classRole})`;
+                studentSelect.appendChild(opt);
+            });
+        }
+
+        function fillStudentDetails() {
+            const house = document.getElementById('select-house').value;
+            const studentName = document.getElementById('select-student').value;
+            const classInput = document.getElementById('input-class');
+
+            if(!house || !studentName) {
+                classInput.value = '';
+                return;
+            }
+
+            const student = houseData[house].find(s => s.name === studentName);
+            if(student) {
+                classInput.value = student.classRole;
+            }
+        }
+
+        function handleRegistration(event) {
+            event.preventDefault();
+            
+            const house = document.getElementById('select-house').value;
+            const studentName = document.getElementById('select-student').value;
+            const classRole = document.getElementById('input-class').value;
+            const gender = document.getElementById('select-gender').value;
+
+            const selectedEvents = Array.from(document.querySelectorAll('input[name="events"]:checked'))
+                                       .map(cb => cb.value);
+
+            if(selectedEvents.length === 0) {
+                showModal('ശ്രദ്ധിക്കുക', 'കുറഞ്ഞത് ഒരു മത്സരമെങ്കിലും തിരഞ്ഞെടുക്കണം!', 'error');
+                return;
+            }
+
+            const registrationData = {
+                id: Date.now(),
+                house,
+                studentName,
+                classRole,
+                gender,
+                events: selectedEvents
+            };
+
+            let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
+            
+            const existingIndex = registrations.findIndex(r => r.studentName === studentName && r.house === house);
+            if(existingIndex >= 0) {
+                registrations[existingIndex] = registrationData; 
+            } else {
+                registrations.push(registrationData); 
+            }
+
+            localStorage.setItem('gallop_sports_regs', JSON.stringify(registrations));
+
+            showModal('വിജയകരമാണ്!', `${studentName} -ന്റെ മത്സര രജിസ്ട്രേഷൻ സേവ് ചെയ്തിരിക്കുന്നു.`);
+            document.getElementById('reg-form').reset();
+            document.getElementById('select-student').disabled = true;
+            document.getElementById('select-student').innerHTML = '<option value="">-- ആദ്യം ഹൗസ് തിരഞ്ഞെടുക്കുക --</option>';
+            handleGenderChange();
+        }
+
+        function renderRegisteredList() {
+            const container = document.getElementById('registered-cards-container');
+            const filterHouse = document.getElementById('filter-house').value;
+            let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
+
+            if(filterHouse) {
+                registrations = registrations.filter(r => r.house === filterHouse);
+            }
+
+            document.getElementById('reg-count-badge').textContent = registrations.length;
+
+            if(registrations.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs">രജിസ്ട്രേഷനുകൾ ഒന്നും ലഭ്യമല്ല.</div>`;
+                return;
+            }
+
+            container.innerHTML = registrations.map((reg) => `
+                <div class="bg-slate-950/60 rounded-2xl p-3.5 border border-slate-800 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full">${reg.house}</span>
+                            <h4 class="text-xs font-bold text-slate-200 mt-1">${reg.studentName}</h4>
+                        </div>
+                        <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-medium">${reg.gender} | ${reg.classRole}</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1 pt-1">
+                        ${reg.events.map(ev => `<span class="bg-slate-900 border border-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-md">${ev}</span>`).join('')}
+                    </div>
+                    ${isAdminLoggedIn ? `<div class="flex justify-end pt-1"><button onclick="deleteRegistration(${reg.id})" class="text-rose-400 hover:text-rose-300 text-[11px] font-semibold">ഡിലീറ്റ് ചെയ്യുക</button></div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function deleteRegistration(id) {
+            if(!isAdminLoggedIn) {
+                showModal('അനുവാദമില്ല', 'ഡിലീറ്റ് ചെയ്യാൻ അഡ്മിൻ ലോഗിൻ ചെയ്യുക!', 'error');
+                return;
+            }
+            if(confirm('ഈ രജിസ്ട്രേഷൻ ഒഴിവാക്കണമെന്നുറപ്പാണോ?')) {
+                let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
+                registrations = registrations.filter(r => r.id !== id);
+                localStorage.setItem('gallop_sports_regs', JSON.stringify(registrations));
+                renderRegisteredList();
+            }
+        }
+
+        function openAdminLogin() {
+            if(isAdminLoggedIn) {
+                showModal('അഡ്മിൻ', 'നിങ്ങൾ ഇതിനകം അഡ്മിൻ ആയി ലോഗിൻ ചെയ്തിരിക്കുന്നു.');
+                return;
+            }
+            document.getElementById('admin-modal').classList.remove('hidden');
+            document.getElementById('admin-modal').classList.add('flex');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+            document.getElementById('admin-modal').classList.remove('flex');
+            document.getElementById('admin-pass').value = '';
+        }
+
+        function verifyAdmin() {
+            const pass = document.getElementById('admin-pass').value;
+            if(pass === 'admin123') {
+                isAdminLoggedIn = true;
+                closeAdminModal();
+                showModal('വിജയം', 'അഡ്മിൻ പ്രവേശനം അനുവദിച്ചിരിക്കുന്നു! ഇപ്പോൾ പ്രിന്റ് എടുക്കാം.');
+                updateAdminUI();
+                renderRegisteredList();
+            } else {
+                showModal('പരാജയം', 'തെറ്റായ പാസ്‌വേഡ്! (ശരിയായ പാസ്‌വേഡ്: admin123)', 'error');
+            }
+        }
+
+        function updateAdminUI() {
+            const printPanel = document.getElementById('admin-print-panel');
+            const notice = document.getElementById('non-admin-print-notice');
+            const btnText = document.getElementById('admin-btn-text');
+            const btnStatus = document.getElementById('admin-btn-status');
+
+            if(isAdminLoggedIn) {
+                printPanel.classList.remove('hidden');
+                notice.classList.add('hidden');
+                btnText.textContent = "അഡ്മിൻ (Active)";
+                btnStatus.className = "text-xs bg-emerald-600 text-white border border-emerald-500/30 px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1 shadow";
+            } else {
+                printPanel.classList.add('hidden');
+                notice.classList.remove('hidden');
+                btnText.textContent = "അഡ്മിൻ ലോഗിൻ";
+                btnStatus.className = "text-xs bg-slate-800 hover:bg-slate-700 text-indigo-400 border border-indigo-500/20 px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1";
+            }
+        }
+
+        // Helper to check if student class belongs to Class 1 or 2
+        function isClass1or2(classRole) {
+            const cr = classRole.toLowerCase();
+            return cr.includes('class 1') || cr.includes('class 2');
+        }
+
+        // Helper to check if student class belongs to Class 3, 4 or Captain/Vice
+        function isClass3or4OrOther(classRole) {
+            const cr = classRole.toLowerCase();
+            return cr.includes('class 3') || cr.includes('class 4') || cr.includes('captain') || cr.includes('pre-primary');
+        }
+
+        function printA4GridPDFReport() {
+            if(!isAdminLoggedIn) {
+                showModal('അനുവാദമില്ല', 'ഈ റിപ്പോർട്ട് പ്രിന്റ് ചെയ്യാൻ അഡ്മിൻ ലോഗിൻ (admin123) ചെയ്യണം!', 'error');
+                return;
+            }
+
+            let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
+            const filterHouse = document.getElementById('filter-house').value;
+
+            if(filterHouse) {
+                registrations = registrations.filter(r => r.house === filterHouse);
+            }
+
+            if(registrations.length === 0) {
+                showModal('ശ്രദ്ധിക്കുക', 'പ്രിന്റ് ചെയ്യാൻ ഡാറ്റകളൊന്നും ലഭ്യമല്ല!', 'error');
+                return;
+            }
+            
+            // Build A4 Grid printable view window categorized by Event -> Gender -> Class groups (Class 1-2 vs Class 3-4)
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>GALLOP Sports Meet 2026 - Event & Class Wise Grid Report</title>
+                    <style>
+                        @page { size: A4 portrait; margin: 12mm; }
+                        body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #111; margin: 0; padding: 0; }
+                        .header { text-align: center; margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 8px; }
+                        h1 { margin: 0; font-size: 22px; color: #1e1b4b; letter-spacing: 1px; }
+                        h2 { margin: 4px 0; font-size: 13px; color: #475569; }
+                        p { margin: 2px 0; font-size: 11px; color: #64748b; }
+                        
+                        .event-section { margin-bottom: 20px; page-break-inside: avoid; }
+                        .event-title { background-color: #1e1b4b; color: #fff; padding: 6px 10px; font-size: 13px; font-weight: bold; border-radius: 4px 4px 0 0; }
+                        
+                        .sub-section { margin-top: 5px; }
+                        .sub-title { background-color: #e2e8f0; color: #0f172a; padding: 4px 8px; font-size: 11px; font-weight: bold; border-left: 3px solid #4f46e5; }
+
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+                        th, td { border: 1px solid #cbd5e1; padding: 6px 8px; font-size: 10px; text-align: left; vertical-align: middle; }
+                        th { background-color: #f8fafc; color: #0f172a; font-weight: bold; text-transform: uppercase; }
+                        .house-badge { font-weight: bold; color: #312e81; }
+                        .no-data { padding: 6px 8px; font-size: 10px; color: #64748b; font-style: italic; background: #fff; border: 1px solid #cbd5e1; }
+                        
+                        .footer { margin-top: 25px; display: flex; justify-content: space-between; font-size: 11px; color: #64748b; page-break-inside: avoid; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>GALLOP SPORTS MEET 2026-27</h1>
+                        <h2>GLPS MUNDEKARAD - Item, Gender & Class Wise Grid Report</h2>
+                        <p>Generated on: ${new Date().toLocaleDateString()} | House Filter: ${filterHouse || 'All Houses'}</p>
+                    </div>
+
+                    ${sportsEvents.map(event => {
+                        // Filter registrations for this event
+                        const eventRegs = registrations.filter(r => r.events.includes(event));
+                        if(eventRegs.length === 0) return '';
+
+                        // Group by Gender and Class Category
+                        const boyClass1_2 = eventRegs.filter(r => r.gender === 'Boy' && isClass1or2(r.classRole));
+                        const boyClass3_4 = eventRegs.filter(r => r.gender === 'Boy' && !isClass1or2(r.classRole));
+                        const girlClass1_2 = eventRegs.filter(r => r.gender === 'Girl' && isClass1or2(r.classRole));
+                        const girlClass3_4 = eventRegs.filter(r => r.gender === 'Girl' && !isClass1or2(r.classRole));
+
+                        const renderTableRows = (list) => {
+                            if(list.length === 0) return `<tr><td colspan="4" class="no-data">കുട്ടികൾ രജിസ്റ്റർ ചെയ്തിട്ടില്ല</td></tr>`;
+                            return list.map((r, i) => `
+                                <tr>
+                                    <td style="width: 8%; text-align: center;">${i + 1}</td>
+                                    <td style="width: 42%;"><b>${r.studentName}</b></td>
+                                    <td style="width: 30%;"><span class="house-badge">${r.house}</span></td>
+                                    <td style="width: 20%;">${r.classRole}</td>
+                                </tr>
+                            `).join('');
+                        };
+
+                        return `
+                            <div class="event-section">
+                                <div class="event-title">🎯 ${event}</div>
+                                
+                                <!-- Boys Class 1 & 2 -->
+                                <div class="sub-section">
+                                    <div class="sub-title">ആൺകുട്ടികൾ (Boys) - ക്ലാസ് 1 & 2</div>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 8%;">#</th>
+                                                <th style="width: 42%;">കുട്ടിയുടെ പേര് (Student Name)</th>
+                                                <th style="width: 30%;">ഹൗസ് (House)</th>
+                                                <th style="width: 20%;">ക്ലാസ്സ് / സ്ഥാനം</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${renderTableRows(boyClass1_2)}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Boys Class 3 & 4 / Others -->
+                                <div class="sub-section">
+                                    <div class="sub-title">ആൺകുട്ടികൾ (Boys) - ക്ലാസ് 3 & 4</div>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 8%;">#</th>
+                                                <th style="width: 42%;">കുട്ടിയുടെ പേര് (Student Name)</th>
+                                                <th style="width: 30%;">ഹൗസ് (House)</th>
+                                                <th style="width: 20%;">ക്ലാസ്സ് / സ്ഥാനം</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${renderTableRows(boyClass3_4)}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Girls Class 1 & 2 -->
+                                <div class="sub-section">
+                                    <div class="sub-title">പെൺകുട്ടികൾ (Girls) - ക്ലാസ് 1 & 2</div>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 8%;">#</th>
+                                                <th style="width: 42%;">കുട്ടിയുടെ പേര് (Student Name)</th>
+                                                <th style="width: 30%;">ഹൗസ് (House)</th>
+                                                <th style="width: 20%;">ക്ലാസ്സ് / സ്ഥാനം</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${renderTableRows(girlClass1_2)}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Girls Class 3 & 4 / Others -->
+                                <div class="sub-section">
+                                    <div class="sub-title">പെൺകുട്ടികൾ (Girls) - ക്ലാസ് 3 & 4</div>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 8%;">#</th>
+                                                <th style="width: 42%;">കുട്ടിയുടെ പേര് (Student Name)</th>
+                                                <th style="width: 30%;">ഹൗസ് (House)</th>
+                                                <th style="width: 20%;">ക്ലാസ്സ് / സ്ഥാനം</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${renderTableRows(girlClass3_4)}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        `;
+                    }).join('')}
+
+                    <div class="footer">
+                        <span>Headmaster / Coordinator Sign</span>
+                        <span>Official Sports Committee Seal</span>
+                    </div>
+
+                    <script>
+                        window.onload = function() { 
+                            window.print(); 
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        function showModal(title, desc, type='success') {
+            const modal = document.getElementById('modal');
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-desc').textContent = desc;
+            const icon = document.getElementById('modal-icon');
+            if(type === 'error') {
+                icon.className = "w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto text-lg font-bold";
+                icon.textContent = "✕";
+            } else {
+                icon.className = "w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-lg font-bold";
+                icon.textContent = "✓";
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function resetFormState() {
+            document.getElementById('select-student').disabled = true;
+            document.getElementById('select-student').innerHTML = '<option value="">-- ആദ്യം ഹൗസ് തിരഞ്ഞെടുക്കുക --</option>';
+            document.getElementById('input-class').value = '';
+            handleGenderChange();
+        }
+    </script>
+</body>
+</html>
