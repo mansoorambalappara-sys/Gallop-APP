@@ -105,7 +105,7 @@
 
                 <div class="flex gap-2 pt-2">
                     <button type="reset" onclick="resetFormState()" class="flex-1 py-3 rounded-2xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition">റദ്ദാക്കുക</button>
-                    <button type="submit" class="flex-2 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 text-xs font-extrabold shadow-lg shadow-amber-500/20 hover:opacity-95 transition">രജിസ്റ്റർ ചെയ്യുക</button>
+                    <button type="submit" id="submit-btn" class="flex-2 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 text-xs font-extrabold shadow-lg shadow-amber-500/20 hover:opacity-95 transition">രജിസ്റ്റർ ചെയ്യുക</button>
                 </div>
             </form>
         </div>
@@ -174,7 +174,7 @@
                     <!-- Populated via JS -->
                 </div>
                 <div class="flex gap-2 pt-2">
-                    <button onclick="printA4GridPDFReport()" class="flex-1 py-2.5 bg-slate-900 text-amber-300 rounded-xl text-xs font-bold shadow hover:bg-slate-800 transition">
+                    <button onclick="fetchAndPrintAdminReport()" class="flex-1 py-2.5 bg-slate-900 text-amber-300 rounded-xl text-xs font-bold shadow hover:bg-slate-800 transition">
                         A4 ഗ്രിഡ് റിപ്പോർട്ട് പ്രിന്റ്
                     </button>
                     <button onclick="closeAdminModal()" class="py-2.5 px-4 bg-slate-200 text-slate-800 rounded-xl text-xs font-bold">മടങ്ങ്</button>
@@ -184,6 +184,9 @@
     </div>
 
     <script>
+        // REPLACE THIS URL WITH YOUR GOOGLE APPS SCRIPT WEB APP URL IF CONNECTING TO GOOGLE SHEETS
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxjwJaNfnz4dY_v8uonEkLfQsyN6vhg9iLxY5YhOu3OvWF_UVml2RRLfdwj4xjHyygfFQ/exec"; 
+
         // Full database of all 4 houses
         const houseData = {
             "BLUE HOUSE": [
@@ -310,7 +313,6 @@
             "വൺ ലെഗ് റൈസ് (One Leg Race)"
         ];
 
-        let isAdminLoggedIn = false;
         let lastRegisteredStudent = null;
 
         window.onload = function() {
@@ -418,7 +420,7 @@
             }
         }
 
-        function handleRegistration(event) {
+        async function handleRegistration(event) {
             event.preventDefault();
             
             const house = document.getElementById('select-house').value;
@@ -443,6 +445,7 @@
                 events: selectedEvents
             };
 
+            // Save locally
             let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
             const existingIndex = registrations.findIndex(r => r.studentName === studentName && r.house === house);
             if(existingIndex >= 0) {
@@ -450,8 +453,38 @@
             } else {
                 registrations.push(lastRegisteredStudent); 
             }
-
             localStorage.setItem('gallop_sports_regs', JSON.stringify(registrations));
+
+            // Sync with Google Sheets if URL provided
+            if (GOOGLE_SCRIPT_URL) {
+                try {
+                    const submitBtn = document.getElementById('submit-btn');
+                    submitBtn.textContent = 'സേവ് ചെയ്യുന്നു...';
+                    submitBtn.disabled = true;
+
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id: lastRegisteredStudent.id,
+                            house: lastRegisteredStudent.house,
+                            studentName: lastRegisteredStudent.studentName,
+                            classRole: lastRegisteredStudent.classRole,
+                            gender: lastRegisteredStudent.gender,
+                            events: lastRegisteredStudent.events.join(', ')
+                        })
+                    });
+
+                    submitBtn.textContent = 'രജിസ്റ്റർ ചെയ്യുക';
+                    submitBtn.disabled = false;
+                } catch(err) {
+                    console.error("Sheet sync error:", err);
+                    const submitBtn = document.getElementById('submit-btn');
+                    submitBtn.textContent = 'രജിസ്റ്റർ ചെയ്യുക';
+                    submitBtn.disabled = false;
+                }
+            }
 
             showModal('വിജയകരമാണ്!', `${studentName} -ന്റെ മത്സര രജിസ്ട്രേഷൻ സേവ് ചെയ്തിരിക്കുന്നു. താഴെ കാണുന്ന ബട്ടൺ വഴി സ്ലിപ്പ് പ്രിന്റ് എടുക്കാം.`);
             document.getElementById('print-slip-container').classList.remove('hidden');
@@ -540,12 +573,29 @@
             document.getElementById('admin-pass').value = '';
         }
 
-        function verifyAdmin() {
+        async function verifyAdmin() {
             const pass = document.getElementById('admin-pass').value;
             if(pass === 'admin123') {
-                isAdminLoggedIn = true;
                 document.getElementById('admin-login-view').classList.add('hidden');
                 document.getElementById('admin-panel-view').classList.remove('hidden');
+                
+                // If Google Sheet URL is provided, try to fetch fresh data
+                if (GOOGLE_SCRIPT_URL) {
+                    try {
+                        const res = await fetch(GOOGLE_SCRIPT_URL);
+                        const data = await res.json();
+                        if (Array.isArray(data) && data.length > 0) {
+                            // Format events from string back to array if needed
+                            const formatted = data.map(item => ({
+                                ...item,
+                                events: typeof item.events === 'string' ? item.events.split(', ') : item.events
+                            }));
+                            localStorage.setItem('gallop_sports_regs', JSON.stringify(formatted));
+                        }
+                    } catch(e) {
+                        console.error("Could not fetch from Google Sheets, using local data", e);
+                    }
+                }
                 renderAdminRegisteredList();
             } else {
                 showModal('പരാജയം', 'തെറ്റായ പാസ്‌വേഡ്!', 'error');
@@ -603,6 +653,25 @@
             return cr.includes('class 3') || cr.includes('class 4') || cr.includes('captain');
         }
 
+        async function fetchAndPrintAdminReport() {
+            if (GOOGLE_SCRIPT_URL) {
+                try {
+                    const res = await fetch(GOOGLE_SCRIPT_URL);
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        const formatted = data.map(item => ({
+                            ...item,
+                            events: typeof item.events === 'string' ? item.events.split(', ') : item.events
+                        }));
+                        localStorage.setItem('gallop_sports_regs', JSON.stringify(formatted));
+                    }
+                } catch(e) {
+                    console.error("Sync failed during print", e);
+                }
+            }
+            printA4GridPDFReport();
+        }
+
         function printA4GridPDFReport() {
             let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
             if(registrations.length === 0) {
@@ -615,7 +684,7 @@
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>GALLOP Sports Meet 2026 - Item & Class Wise Grid Report</title>
+                    <title>GALLOP Sports Meet 2026 - Item, Gender & Class Wise Grid Report</title>
                     <style>
                         @page { size: A4 portrait; margin: 12mm; }
                         body { font-family: 'Anek Malayalam', Arial, sans-serif; color: #111; margin: 0; padding: 0; }
