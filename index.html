@@ -29,20 +29,32 @@
 </head>
 <body class="bg-white text-slate-900 min-h-screen flex flex-col justify-between selection:bg-amber-400 selection:text-slate-900">
 
-    <header class="bg-amber-300 border-b-2 border-amber-400 shadow-md py-5 px-4 sticky top-0 z-40">
+    <!-- Header with Yellow background and dark blue GALLOP text -->
+    <header class="bg-amber-300 border-b-2 border-amber-400 shadow-md py-4 px-4 sticky top-0 z-40">
         <div class="max-w-md mx-auto flex flex-col items-center text-center">
-            <span class="bg-slate-900 text-amber-300 text-[11px] px-3.5 py-1 rounded-full font-bold uppercase tracking-widest mb-2 shadow-sm">GLPS MUNDEKARAD</span>
+            <span class="bg-slate-900 text-amber-300 text-[11px] px-3.5 py-1 rounded-full font-bold uppercase tracking-widest mb-1 shadow-sm">GLPS MUNDEKARAD</span>
             
             <!-- 3D Gallop Title -->
-            <h1 class="text-4xl sm:text-5xl font-black tracking-wider text-blue-900 text-3d uppercase my-1">
+            <h1 class="text-3xl sm:text-4xl font-black tracking-wider text-blue-900 text-3d uppercase my-0.5">
                 GALLOP
             </h1>
             <p class="text-slate-900 text-xs font-bold mt-0.5">ഗലോപ്പ് സ്കൂൾ കായികമേള 2026-27</p>
         </div>
     </header>
 
-    <main class="max-w-md mx-auto w-full p-4 my-2 flex-grow space-y-6">
+    <main class="max-w-md mx-auto w-full p-4 my-2 flex-grow space-y-4">
         
+        <!-- Results Check Quick Button -->
+        <div class="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-3xl p-4 text-white shadow-lg flex items-center justify-between">
+            <div>
+                <h3 class="text-xs font-bold text-amber-300 uppercase tracking-wide">🏆 മത്സര ഫലം അറിയാം</h3>
+                <p class="text-[11px] text-slate-200 mt-0.5">കുട്ടികളുടെ സ്ഥാനങ്ങളും ഗ്രേഡുകളും പരിശോധിക്കുക</p>
+            </div>
+            <button onclick="openStudentResultModal()" class="bg-amber-400 text-slate-900 px-3.5 py-2 rounded-2xl text-xs font-extrabold shadow hover:bg-amber-500 transition whitespace-nowrap">
+                റിസൾട്ട് നോക്കൂ
+            </button>
+        </div>
+
         <!-- Registration Form Card -->
         <div class="bg-white rounded-3xl shadow-xl p-5 border border-slate-200">
             <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
@@ -139,6 +151,41 @@
         </div>
     </div>
 
+    <!-- Student Result Modal -->
+    <div id="student-result-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">🏆 കുട്ടിയുടെ മത്സര ഫലങ്ങൾ</h3>
+                <button onclick="closeStudentResultModal()" class="text-slate-400 hover:text-slate-600 text-base font-bold">✕</button>
+            </div>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ഹൗസ് തിരഞ്ഞെടുക്കുക</label>
+                    <select id="result-select-house" onchange="updateResultStudentsList()" class="w-full p-2.5 rounded-xl border border-slate-300 text-xs bg-slate-50 font-medium">
+                        <option value="">-- ഹൗസ് തിരഞ്ഞെടുക്കുക --</option>
+                        <option value="BLUE HOUSE">Blue House</option>
+                        <option value="GREEN HOUSE">Green House</option>
+                        <option value="RED HOUSE">Red House</option>
+                        <option value="YELLOW HOUSE">Yellow House</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">കുട്ടിയുടെ പേര്</label>
+                    <select id="result-select-student" onchange="fetchStudentResults()" disabled class="w-full p-2.5 rounded-xl border border-slate-300 text-xs bg-slate-50 font-medium disabled:opacity-50">
+                        <option value="">-- ആദ്യം ഹൗസ് തിരഞ്ഞെടുക്കുക --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="student-result-display" class="max-h-60 overflow-y-auto space-y-2 pt-2">
+                <div class="text-center py-4 text-xs text-slate-400">ഹൗസും കുട്ടിയുടെ പേരും തിരഞ്ഞെടുക്കുക.</div>
+            </div>
+
+            <button onclick="closeStudentResultModal()" class="w-full py-2.5 bg-slate-900 text-amber-300 rounded-xl text-xs font-bold">മടങ്ങ്</button>
+        </div>
+    </div>
+
     <!-- Admin Login / Panel Modal -->
     <div id="admin-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
@@ -147,8 +194,8 @@
                     <h3 class="text-sm font-bold text-slate-900">അഡ്മിൻ ലോഗിൻ</h3>
                     <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-600">✕</button>
                 </div>
-                <p class="text-xs text-slate-600 mb-3">എല്ലാ കുട്ടികളുടെയും രജിസ്ട്രേഷൻ ലിസ്റ്റും ഗ്രേഡ് റിപ്പോർട്ടും കാണാൻ പാസ്‌വേഡ് നൽകുക.</p>
-                <input type="password" id="admin-pass" placeholder="പാസ്‌വേഡ് നൽകുക (admin123)" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 focus:ring-2 focus:ring-amber-500 mb-3">
+                <p class="text-xs text-slate-600 mb-3">എല്ലാ കുട്ടികളുടെയും രജിസ്ട്രേഷൻ ലിസ്റ്റും ഗ്രേഡ് റിപ്പോർട്ടും കാണാൻ പാസ്‌വേഡ് (`admin123`) നൽകുക.</p>
+                <input type="password" id="admin-pass" placeholder="പാസ്‌വേഡ് നൽകുക" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 focus:ring-2 focus:ring-amber-500 mb-3">
                 <div class="flex gap-2">
                     <button onclick="closeAdminModal()" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-xs font-bold text-slate-700">ക്യാൻസൽ</button>
                     <button onclick="verifyAdmin()" class="flex-1 py-2.5 rounded-xl bg-slate-900 text-amber-300 text-xs font-bold shadow">ലോഗിൻ</button>
@@ -170,22 +217,34 @@
                         <option value="YELLOW HOUSE">Yellow House</option>
                     </select>
                 </div>
-                <div class="max-h-60 overflow-y-auto space-y-2 pr-1" id="admin-registered-cards-container">
+
+                <div class="flex gap-2 bg-slate-100 p-1 rounded-xl">
+                    <button onclick="switchAdminTab('list')" id="admin-tab-list" class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-white shadow-sm text-slate-900 transition">രജിസ്ട്രേഷൻ ലിസ്റ്റ്</button>
+                    <button onclick="switchAdminTab('results')" id="admin-tab-results" class="flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600 transition">റിസൾട്ട് & സ്ഥാനങ്ങൾ</button>
+                </div>
+
+                <div id="admin-list-container" class="max-h-60 overflow-y-auto space-y-2 pr-1">
                     <!-- Populated via JS -->
                 </div>
+
+                <div id="admin-results-container" class="hidden max-h-60 overflow-y-auto space-y-3 pr-1">
+                    <!-- Populated via JS for position entry -->
+                </div>
+
                 <div class="flex gap-2 pt-2">
-                    <button onclick="fetchAndPrintAdminReport()" class="flex-1 py-2.5 bg-slate-900 text-amber-300 rounded-xl text-xs font-bold shadow hover:bg-slate-800 transition">
+                    <button onclick="printA4GridPDFReport()" class="flex-1 py-2.5 bg-slate-900 text-amber-300 rounded-xl text-xs font-bold shadow hover:bg-slate-800 transition flex items-center justify-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                         A4 ഗ്രിഡ് റിപ്പോർട്ട് പ്രിന്റ്
                     </button>
-                    <button onclick="closeAdminModal()" class="py-2.5 px-4 bg-slate-200 text-slate-800 rounded-xl text-xs font-bold">മടങ്ങ്</button>
+                    <button onclick="closeAdminModal()" class="py-2.5 px-3 bg-slate-200 text-slate-800 rounded-xl text-xs font-bold">മടങ്ങ്</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // REPLACE THIS URL WITH YOUR GOOGLE APPS SCRIPT WEB APP URL IF CONNECTING TO GOOGLE SHEETS
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxjwJaNfnz4dY_v8uonEkLfQsyN6vhg9iLxY5YhOu3OvWF_UVml2RRLfdwj4xjHyygfFQ/exec"; 
+        // GOOGLE APPS SCRIPT WEB APP URL (Configure your Google Apps Script URL here)
+        const GOOGLE_SCRIPT_URL = ""; 
 
         // Full database of all 4 houses
         const houseData = {
@@ -299,25 +358,111 @@
         };
 
         const sportsEvents = [
-            "50 മീറ്റർ ഓട്ടം (50m Race)",
-            "100 മീറ്റർ ഓട്ടം (100m Race)",
-            "മ്യൂസിക്കൽ ചെയർ (Musical Chair)",
-            "ലക്കി സർക്കിൾ (Lucky Circle)",
-            "സാക്ക് റൈസ് (Sack Race)",
-            "4x50 റിലേ മത്സരം (4x50m Relay)",
-            "4x100 റിലേ മത്സരം (4x100m Relay)",
-            "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം (Bottle Filling)",
-            "ലെമൺ സ്പൂൺ (Lemon Spoon)",
-            "സ്കിപ്പിംഗ് (Skipping)",
-            "പൊട്ടാറ്റോ പിക്കിംഗ് (Potato Picking)",
-            "വൺ ലെഗ് റൈസ് (One Leg Race)"
+            "50 മീറ്റർ ഓട്ടം",
+            "100 മീറ്റർ ഓട്ടം",
+            "മ്യൂസിക്കൽ ചെയർ",
+            "ലക്കി സർക്കിൾ",
+            "സാക്ക് റൈസ്",
+            "4x50 റിലേ മത്സരം",
+            "4x100 റിലേ മത്സരം",
+            "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം",
+            "ലെമൺ സ്പൂൺ",
+            "സ്കിപ്പിംഗ്",
+            "പൊട്ടാറ്റോ പിക്കിംഗ്",
+            "വൺ ലെഗ് റൈസ്"
         ];
 
         let lastRegisteredStudent = null;
 
+        // Comprehensive deduplicated initial registrations extracted from PDF records
+        const initialRegistrations = [
+            // 50 മീറ്റർ ഓട്ടം
+            { id: 101, house: "GREEN HOUSE", studentName: "MUHAMMED AFNAS K", classRole: "Class 2", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 102, house: "BLUE HOUSE", studentName: "MUHAMMED RISWAN P", classRole: "Class 2", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            { id: 103, house: "YELLOW HOUSE", studentName: "MUHAMMED SHAHABAS KP", classRole: "Class 2", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 104, house: "GREEN HOUSE", studentName: "RABEEUL RASHAAD K", classRole: "Class 1", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 105, house: "GREEN HOUSE", studentName: "MUHAMMED RAZAN AR", classRole: "Class 1", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ"] },
+            { id: 106, house: "GREEN HOUSE", studentName: "NISHAN V", classRole: "Class 2", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 107, house: "RED HOUSE", studentName: "MUHAMMED TAMIM C", classRole: "Class 2", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 108, house: "RED HOUSE", studentName: "MUHAMMED ASLAM K", classRole: "Class 2", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 109, house: "BLUE HOUSE", studentName: "HISHAM PP", classRole: "Class 1", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            { id: 110, house: "RED HOUSE", studentName: "ABDULLA MINHAJ CT", classRole: "Class 4", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 111, house: "YELLOW HOUSE", studentName: "MUHAMMED MINHAJ NF", classRole: "Class 3", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 112, house: "BLUE HOUSE", studentName: "MUHAMMED AMJAD PP", classRole: "Class 3", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 113, house: "BLUE HOUSE", studentName: "MUHAMMED RAIHAN N", classRole: "Class 4", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 114, house: "BLUE HOUSE", studentName: "MUHAMMED HASHIM V", classRole: "Captain", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 115, house: "YELLOW HOUSE", studentName: "JADUL HAQUE K", classRole: "Captain", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 116, house: "GREEN HOUSE", studentName: "MUHAMMED HISHAM C", classRole: "Class 3", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 117, house: "BLUE HOUSE", studentName: "ANSAF M K", classRole: "Class 3", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 118, house: "GREEN HOUSE", studentName: "AHMMED NAJIL V", classRole: "Captain", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "സാക്ക് റൈസ്", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 119, house: "RED HOUSE", studentName: "MUHAMMED SHARIF MC", classRole: "Captain", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 120, house: "RED HOUSE", studentName: "MUHAMMED RIZAN C", classRole: "Class 4", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 121, house: "BLUE HOUSE", studentName: "MUHAMMED RAZAN P", classRole: "Class 4", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 122, house: "GREEN HOUSE", studentName: "MUHAMMED SHAMMAS M C", classRole: "Class 3", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 123, house: "RED HOUSE", studentName: "MUHAMMED RAZAN PP", classRole: "Class 3", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 124, house: "GREEN HOUSE", studentName: "MUHAMMED MINHAJ P", classRole: "Class 3", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 125, house: "RED HOUSE", studentName: "MIFTHAH KC", classRole: "Class 3", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 126, house: "YELLOW HOUSE", studentName: "RABEEH C", classRole: "Class 3", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            { id: 127, house: "BLUE HOUSE", studentName: "MUHAMMED MUSTHAFA", classRole: "Class 3", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "സാക്ക് റൈസ്", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "പൊട്ടാറ്റോ പിക്കിംഗ്"] },
+            
+            // Girls & Pre-Primary samples from PDF
+            { id: 128, house: "RED HOUSE", studentName: "AYISHA RIYA C", classRole: "Class 1", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 129, house: "BLUE HOUSE", studentName: "FATHIMA MUFEEDA", classRole: "Class 2", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 130, house: "BLUE HOUSE", studentName: "FIDHA FATHIMA C", classRole: "Class 1", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            { id: 131, house: "YELLOW HOUSE", studentName: "DHRUVA DK", classRole: "Class 2", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "വൺ ലെഗ് റൈസ്"] },
+            { id: 132, house: "BLUE HOUSE", studentName: "FATHIMA ISHA V", classRole: "Class 1", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 133, house: "RED HOUSE", studentName: "ARYANANDA B", classRole: "Class 2", gender: "Girl", events: ["മ്യൂസിക്കൽ ചെയർ", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            { id: 134, house: "RED HOUSE", studentName: "FATHIMA MEHRIN K", classRole: "Class 2", gender: "Girl", events: ["100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 135, house: "RED HOUSE", studentName: "HIBA FATHIMA", classRole: "Class 1", gender: "Girl", events: ["മ്യൂസിക്കൽ ചെയർ", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            { id: 136, house: "YELLOW HOUSE", studentName: "MARJAANAH K", classRole: "Class 1", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            { id: 137, house: "YELLOW HOUSE", studentName: "ALAYNA FATHIMA PJ", classRole: "Class 2", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 138, house: "BLUE HOUSE", studentName: "AYISHA MEHRIN C", classRole: "Class 1", gender: "Girl", events: ["മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            { id: 139, house: "YELLOW HOUSE", studentName: "FATHIMA RAZANA", classRole: "Class 1", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            { id: 140, house: "GREEN HOUSE", studentName: "AIRA FATHIMA K", classRole: "Class 2", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "വൺ ലെഗ് റൈസ്"] },
+            { id: 141, house: "YELLOW HOUSE", studentName: "FATHIMA NASHWA V", classRole: "Class 1", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ലെമൺ സ്പൂൺ"] },
+            { id: 142, house: "YELLOW HOUSE", studentName: "FAIHA FATHIMA", classRole: "Class 1", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            
+            // Class 3 & 4 Girls
+            { id: 143, house: "YELLOW HOUSE", studentName: "AJWA FATHIMA C", classRole: "Vice Captain", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 144, house: "RED HOUSE", studentName: "SHIHA FATHIMA C T", classRole: "Class 3", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്"] },
+            { id: 145, house: "YELLOW HOUSE", studentName: "FATHIMA HAYA PP", classRole: "Class 3", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്"] },
+            { id: 146, house: "BLUE HOUSE", studentName: "FATHIMA HAFILA V", classRole: "Class 3", gender: "Girl", events: ["മ്യൂസിക്കൽ ചെയർ", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "വൺ ലെഗ് റൈസ്"] },
+            { id: 147, house: "GREEN HOUSE", studentName: "NIYA FATHIMA K P", classRole: "Vice Captain", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്"] },
+            { id: 148, house: "BLUE HOUSE", studentName: "SHAHMA PK", classRole: "Vice Captain", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 149, house: "RED HOUSE", studentName: "FATHIMA VAFA", classRole: "Vice Captain", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 150, house: "YELLOW HOUSE", studentName: "FATHIMA SWAFA", classRole: "Class 4", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 151, house: "GREEN HOUSE", studentName: "RIDHA FATHIMA N", classRole: "Class 3", gender: "Girl", events: ["100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            { id: 152, house: "YELLOW HOUSE", studentName: "FATHIMA RIFA N", classRole: "Class 3", gender: "Girl", events: ["100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            { id: 153, house: "GREEN HOUSE", studentName: "FAHMA FATHIMA C", classRole: "Class 4", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 154, house: "BLUE HOUSE", studentName: "HISANA FATHIMA C K", classRole: "Class 4", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 155, house: "GREEN HOUSE", studentName: "MINYA FATHIMA C K", classRole: "Class 4", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്", "വൺ ലെഗ് റൈസ്"] },
+            { id: 156, house: "RED HOUSE", studentName: "MINHA FATHIMA P", classRole: "Class 3", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ"] },
+            { id: 157, house: "RED HOUSE", studentName: "SILVA FATHIMA C", classRole: "Class 4", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "100 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "4x50 റിലേ മത്സരം", "4x100 റിലേ മത്സരം", "ബോട്ടിൽ ഫില്ലിംഗ് മത്സരം", "ലെമൺ സ്പൂൺ", "സ്കിപ്പിംഗ്"] },
+
+            // Pre-Primary Lucky Circle
+            { id: 158, house: "YELLOW HOUSE", studentName: "AYZAL ISHWA V", classRole: "Pre-Primary", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ലക്കി സർക്കിൾ", "ലെമൺ സ്പൂൺ"] },
+            { id: 159, house: "BLUE HOUSE", studentName: "MUHAMMED ZAYAN N", classRole: "Pre-Primary", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ലക്കി സർക്കിൾ", "ലെമൺ സ്പൂൺ"] },
+            { id: 160, house: "RED HOUSE", studentName: "RUDRAV DK", classRole: "Pre-Primary", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ലക്കി സർക്കിൾ", "ലെമൺ സ്പൂൺ"] },
+            { id: 161, house: "GREEN HOUSE", studentName: "FATHIMA LIYA V", classRole: "Pre-Primary", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ലക്കി സർക്കിൾ", "ലെമൺ സ്പൂൺ"] },
+            { id: 162, house: "GREEN HOUSE", studentName: "NAFIH V", classRole: "Pre-Primary", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ലക്കി സർക്കിൾ", "ലെമൺ സ്പൂൺ"] },
+            { id: 163, house: "YELLOW HOUSE", studentName: "HAMBALA BATHOOL N", classRole: "Pre-Primary", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ലക്കി സർക്കിൾ", "ലെമൺ സ്പൂൺ"] },
+            { id: 164, house: "BLUE HOUSE", studentName: "RITHUNANDA V", classRole: "Pre-Primary", gender: "Girl", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കல் ചെയർ", "ലക്കി സർക്കിൾ", "ലെമൺ സ്പൂൺ"] },
+            { id: 165, house: "YELLOW HOUSE", studentName: "MUHAMMED ESHAAN N", classRole: "Pre-Primary", gender: "Boy", events: ["50 മീറ്റർ ഓട്ടം", "മ്യൂസിക്കൽ ചെയർ", "ലക്കി സർക്കിൾ", "ലെമൺ സ്പൂൺ"] }
+        ];
+
         window.onload = function() {
             renderEventsCheckboxes();
+            initializeStorage();
         };
+
+        function initializeStorage() {
+            if (!localStorage.getItem('gallop_sports_regs')) {
+                localStorage.setItem('gallop_sports_regs', JSON.stringify(initialRegistrations));
+            }
+            if (!localStorage.getItem('gallop_sports_results')) {
+                localStorage.setItem('gallop_sports_results', JSON.stringify({}));
+            }
+        }
 
         function renderEventsCheckboxes() {
             const container = document.getElementById('events-checkbox-container');
@@ -347,7 +492,6 @@
                 parentLabel.classList.remove('opacity-40', 'bg-slate-100', 'cursor-not-allowed');
 
                 if (isPrePrimary) {
-                    // Pre-Primary students only get: 50m, Musical Chair, Lemon Spoon, Lucky Circle
                     const allowedForPrePrimary = eventName.includes('50 മീറ്റർ ഓട്ടം') || 
                                                  eventName.includes('മ്യൂസിക്കൽ ചെയർ') || 
                                                  eventName.includes('ലെമൺ സ്പൂൺ') || 
@@ -358,13 +502,11 @@
                         parentLabel.classList.add('opacity-40', 'bg-slate-100', 'cursor-not-allowed');
                     }
                 } else {
-                    // Lucky Circle is strictly for Pre-Primary
                     if (eventName.includes('ലക്കി സർക്കിൾ')) {
                         cb.checked = false;
                         cb.disabled = true;
                         parentLabel.classList.add('opacity-40', 'bg-slate-100', 'cursor-not-allowed');
                     }
-                    // Gender specific locks for primary classes
                     if (gender === 'Boy') {
                         if (eventName.includes('സ്കിപ്പിംഗ്') || eventName.includes('വൺ ലെഗ് റൈസ്')) {
                             cb.checked = false;
@@ -445,9 +587,8 @@
                 events: selectedEvents
             };
 
-            // Save locally
             let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
-            const existingIndex = registrations.findIndex(r => r.studentName === studentName && r.house === house);
+            const existingIndex = registrations.findIndex(r => r.studentName.trim().toUpperCase() === studentName.trim().toUpperCase() && r.house === house);
             if(existingIndex >= 0) {
                 registrations[existingIndex] = lastRegisteredStudent; 
             } else {
@@ -455,7 +596,6 @@
             }
             localStorage.setItem('gallop_sports_regs', JSON.stringify(registrations));
 
-            // Sync with Google Sheets if URL provided
             if (GOOGLE_SCRIPT_URL) {
                 try {
                     const submitBtn = document.getElementById('submit-btn');
@@ -505,7 +645,7 @@
                 <head>
                     <title>GALLOP Sports Meet 2026 - Registration Slip</title>
                     <style>
-                        @page { size: A4 portrait; margin: 20mm; }
+                        @page { size: A4 portrait; margin: 15mm; }
                         body { font-family: 'Anek Malayalam', Arial, sans-serif; color: #111; margin: 0; padding: 0; }
                         .slip-box { border: 2px solid #1e1b4b; border-radius: 12px; padding: 25px; max-width: 600px; margin: 0 auto; background: #fff; }
                         .header { text-align: center; border-bottom: 2px solid #cbd5e1; padding-bottom: 12px; margin-bottom: 20px; }
@@ -553,11 +693,85 @@
                             <span>Official Stamp</span>
                         </div>
                     </div>
-                    <script>window.onload = function() { window.print(); }<\/script>
                 </body>
                 </html>
             `);
             printWin.document.close();
+            printWin.focus();
+            setTimeout(() => { printWin.print(); }, 500);
+        }
+
+        // Student Result Modal Functions
+        function openStudentResultModal() {
+            document.getElementById('student-result-modal').classList.remove('hidden');
+            document.getElementById('student-result-modal').classList.add('flex');
+            document.getElementById('result-select-house').value = '';
+            document.getElementById('result-select-student').innerHTML = '<option value="">-- ആദ്യം ഹൗസ് തിരഞ്ഞെടുക്കുക --</option>';
+            document.getElementById('result-select-student').disabled = true;
+            document.getElementById('student-result-display').innerHTML = '<div class="text-center py-4 text-xs text-slate-400">ഹൗസും കുട്ടിയുടെ പേരും തിരഞ്ഞെടുക്കുക.</div>';
+        }
+
+        function closeStudentResultModal() {
+            document.getElementById('student-result-modal').classList.add('hidden');
+            document.getElementById('student-result-modal').classList.remove('flex');
+        }
+
+        function updateResultStudentsList() {
+            const house = document.getElementById('result-select-house').value;
+            const studentSelect = document.getElementById('result-select-student');
+            studentSelect.innerHTML = '<option value="">-- കുട്ടിയെ തിരഞ്ഞെടുക്കുക --</option>';
+            document.getElementById('student-result-display').innerHTML = '<div class="text-center py-4 text-xs text-slate-400">കുട്ടിയുടെ പേര് തിരഞ്ഞെടുക്കുക.</div>';
+            
+            if(!house || !houseData[house]) {
+                studentSelect.disabled = true;
+                return;
+            }
+
+            studentSelect.disabled = false;
+            houseData[house].forEach(student => {
+                const opt = document.createElement('option');
+                opt.value = student.name;
+                opt.textContent = `${student.name} (${student.classRole})`;
+                studentSelect.appendChild(opt);
+            });
+        }
+
+        function fetchStudentResults() {
+            const house = document.getElementById('result-select-house').value;
+            const studentName = document.getElementById('result-select-student').value;
+            const displayDiv = document.getElementById('student-result-display');
+
+            if(!house || !studentName) {
+                displayDiv.innerHTML = '<div class="text-center py-4 text-xs text-slate-400">ഹൗസും കുട്ടിയുടെ പേരും തിരഞ്ഞെടുക്കുക.</div>';
+                return;
+            }
+
+            let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
+            let resultsData = JSON.parse(localStorage.getItem('gallop_sports_results') || '{}');
+
+            const reg = registrations.find(r => r.house === house && r.studentName.trim().toUpperCase() === studentName.trim().toUpperCase());
+
+            if(!reg || !reg.events || reg.events.length === 0) {
+                displayDiv.innerHTML = `<div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center text-xs text-slate-600 font-medium">ഈ കുട്ടിക്ക് മത്സര രജിസ്ട്രേഷനുകൾ ഒന്നും ലഭ്യമല്ല.</div>`;
+                return;
+            }
+
+            displayDiv.innerHTML = reg.events.map(event => {
+                const posKey = `${event}_${studentName}_${house}`;
+                const position = resultsData[posKey] || 'ഫലം പ്രഖ്യാപിച്ചിട്ടില്ല';
+                const hasWon = resultsData[posKey] ? true : false;
+                return `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                        <div>
+                            <p class="font-bold text-slate-900">${event}</p>
+                            <p class="text-[10px] text-slate-500">${reg.classRole} (${reg.gender})</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-lg font-bold text-[11px] ${hasWon ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-slate-200 text-slate-600'}">
+                            ${position}
+                        </span>
+                    </div>
+                `;
+            }).join('');
         }
 
         function openAdminLogin() {
@@ -579,13 +793,11 @@
                 document.getElementById('admin-login-view').classList.add('hidden');
                 document.getElementById('admin-panel-view').classList.remove('hidden');
                 
-                // If Google Sheet URL is provided, try to fetch fresh data
                 if (GOOGLE_SCRIPT_URL) {
                     try {
                         const res = await fetch(GOOGLE_SCRIPT_URL);
                         const data = await res.json();
                         if (Array.isArray(data) && data.length > 0) {
-                            // Format events from string back to array if needed
                             const formatted = data.map(item => ({
                                 ...item,
                                 events: typeof item.events === 'string' ? item.events.split(', ') : item.events
@@ -597,13 +809,33 @@
                     }
                 }
                 renderAdminRegisteredList();
+                renderAdminResultsPanel();
             } else {
                 showModal('പരാജയം', 'തെറ്റായ പാസ്‌വേഡ്!', 'error');
             }
         }
 
+        function switchAdminTab(tab) {
+            const listBtn = document.getElementById('admin-tab-list');
+            const resultsBtn = document.getElementById('admin-tab-results');
+            const listContainer = document.getElementById('admin-list-container');
+            const resultsContainer = document.getElementById('admin-results-container');
+
+            if(tab === 'list') {
+                listBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-white shadow-sm text-slate-900 transition";
+                resultsBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600 transition";
+                listContainer.classList.remove('hidden');
+                resultsContainer.classList.add('hidden');
+            } else {
+                resultsBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-white shadow-sm text-slate-900 transition";
+                listBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-slate-600 transition";
+                resultsContainer.classList.remove('hidden');
+                listContainer.classList.add('hidden');
+            }
+        }
+
         function renderAdminRegisteredList() {
-            const container = document.getElementById('admin-registered-cards-container');
+            const container = document.getElementById('admin-list-container');
             const filterHouse = document.getElementById('admin-filter-house').value;
             let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
 
@@ -635,12 +867,68 @@
             `).join('');
         }
 
+        function renderAdminResultsPanel() {
+            const container = document.getElementById('admin-results-container');
+            let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
+            let resultsData = JSON.parse(localStorage.getItem('gallop_sports_results') || '{}');
+
+            container.innerHTML = sportsEvents.map(event => {
+                const eventRegs = registrations.filter(r => r.events.includes(event));
+                if(eventRegs.length === 0) return '';
+
+                const uniqueRegs = Array.from(new Map(eventRegs.map(item => [item.studentName.trim().toUpperCase() + '-' + item.house, item])).values());
+
+                return `
+                    <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200 space-y-2">
+                        <h4 class="text-xs font-bold text-indigo-900 border-b border-slate-200 pb-1">🎯 ${event} (${uniqueRegs.length} കുട്ടികൾ)</h4>
+                        <div class="space-y-1.5">
+                            ${uniqueRegs.map(r => {
+                                const key = `${event}_${r.studentName}_${r.house}`;
+                                const currentPos = resultsData[key] || '';
+                                return `
+                                    <div class="flex items-center justify-between bg-white p-2 rounded-xl border border-slate-200 text-xs">
+                                        <div>
+                                            <p class="font-bold text-slate-900">${r.studentName}</p>
+                                            <p class="text-[10px] text-slate-500">${r.house} • ${r.classRole} (${r.gender})</p>
+                                        </div>
+                                        <div class="flex items-center gap-1">
+                                            <select onchange="savePosition('${event}', '${r.studentName}', '${r.house}', this.value)" class="p-1.5 rounded-lg border border-slate-300 text-xs font-bold text-indigo-900 bg-indigo-50">
+                                                <option value="">സ്ഥാനം...</option>
+                                                <option value="1st Place" ${currentPos === '1st Place' ? 'selected' : ''}>1st Place</option>
+                                                <option value="2nd Place" ${currentPos === '2nd Place' ? 'selected' : ''}>2nd Place</option>
+                                                <option value="3rd Place" ${currentPos === '3rd Place' ? 'selected' : ''}>3rd Place</option>
+                                                <option value="A Grade" ${currentPos === 'A Grade' ? 'selected' : ''}>A Grade</option>
+                                                <option value="B Grade" ${currentPos === 'B Grade' ? 'selected' : ''}>B Grade</option>
+                                                <option value="C Grade" ${currentPos === 'C Grade' ? 'selected' : ''}>C Grade</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function savePosition(event, studentName, house, position) {
+            let resultsData = JSON.parse(localStorage.getItem('gallop_sports_results') || '{}');
+            const key = `${event}_${studentName}_${house}`;
+            if(position) {
+                resultsData[key] = position;
+            } else {
+                delete resultsData[key];
+            }
+            localStorage.setItem('gallop_sports_results', JSON.stringify(resultsData));
+        }
+
         function deleteRegistration(id) {
             if(!confirm('ഈ രജിസ്ട്രേഷൻ ഒഴിവാക്കണമെന്നുറപ്പാണോ?')) return;
             let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
             registrations = registrations.filter(r => r.id !== id);
             localStorage.setItem('gallop_sports_regs', JSON.stringify(registrations));
             renderAdminRegisteredList();
+            renderAdminResultsPanel();
         }
 
         function isClass1or2(classRole) {
@@ -653,7 +941,7 @@
             return cr.includes('class 3') || cr.includes('class 4') || cr.includes('captain');
         }
 
-        async function fetchAndPrintAdminReport() {
+        async function printA4GridPDFReport() {
             if (GOOGLE_SCRIPT_URL) {
                 try {
                     const res = await fetch(GOOGLE_SCRIPT_URL);
@@ -669,11 +957,13 @@
                     console.error("Sync failed during print", e);
                 }
             }
-            printA4GridPDFReport();
+            printA4GridPDFReportAction();
         }
 
-        function printA4GridPDFReport() {
+        function printA4GridPDFReportAction() {
             let registrations = JSON.parse(localStorage.getItem('gallop_sports_regs') || '[]');
+            let resultsData = JSON.parse(localStorage.getItem('gallop_sports_results') || '{}');
+
             if(registrations.length === 0) {
                 showModal('ശ്രദ്ധിക്കുക', 'പ്രിന്റ് ചെയ്യാൻ ഡാറ്റകളൊന്നും ലഭ്യമല്ല!', 'error');
                 return;
@@ -684,29 +974,29 @@
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>GALLOP Sports Meet 2026 - Item, Gender & Class Wise Grid Report</title>
+                    <title>GALLOP Sports Meet 2026 - Compact Grid Report</title>
                     <style>
-                        @page { size: A4 portrait; margin: 12mm; }
-                        body { font-family: 'Anek Malayalam', Arial, sans-serif; color: #111; margin: 0; padding: 0; }
-                        .header { text-align: center; margin-bottom: 15px; border-bottom: 2px solid #333; padding-bottom: 8px; }
-                        h1 { margin: 0; font-size: 22px; color: #1e1b4b; }
-                        h2 { margin: 4px 0; font-size: 13px; color: #475569; }
-                        p { margin: 2px 0; font-size: 11px; color: #64748b; }
-                        .event-section { margin-bottom: 20px; page-break-inside: avoid; }
-                        .event-title { background-color: #1e1b4b; color: #fff; padding: 6px 10px; font-size: 13px; font-weight: bold; border-radius: 4px 4px 0 0; }
-                        .sub-section { margin-top: 5px; }
-                        .sub-title { background-color: #e2e8f0; color: #0f172a; padding: 4px 8px; font-size: 11px; font-weight: bold; border-left: 3px solid #f59e0b; }
-                        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-                        th, td { border: 1px solid #cbd5e1; padding: 6px 8px; font-size: 10px; text-align: left; }
+                        @page { size: A4 portrait; margin: 8mm; }
+                        body { font-family: 'Anek Malayalam', Arial, sans-serif; color: #111; margin: 0; padding: 0; line-height: 1.15; }
+                        .header { text-align: center; margin-bottom: 6px; border-bottom: 1.5px solid #333; padding-bottom: 3px; }
+                        h1 { margin: 0; font-size: 16px; color: #1e1b4b; }
+                        h2 { margin: 2px 0; font-size: 10px; color: #475569; }
+                        p { margin: 1px 0; font-size: 8px; color: #64748b; }
+                        .event-section { margin-bottom: 8px; page-break-inside: avoid; }
+                        .event-title { background-color: #1e1b4b; color: #fff; padding: 3px 6px; font-size: 10px; font-weight: bold; border-radius: 3px 3px 0 0; }
+                        .sub-section { margin-top: 2px; }
+                        .sub-title { background-color: #e2e8f0; color: #0f172a; padding: 2px 5px; font-size: 9px; font-weight: bold; border-left: 3px solid #f59e0b; }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 3px; }
+                        th, td { border: 1px solid #cbd5e1; padding: 2px 4px; font-size: 8.5px; text-align: left; }
                         th { background-color: #f8fafc; color: #0f172a; font-weight: bold; text-transform: uppercase; }
-                        .no-data { padding: 6px 8px; font-size: 10px; color: #64748b; font-style: italic; background: #fff; border: 1px solid #cbd5e1; }
-                        .footer { margin-top: 25px; display: flex; justify-content: space-between; font-size: 11px; color: #64748b; page-break-inside: avoid; }
+                        .no-data { padding: 3px 5px; font-size: 8.5px; color: #64748b; font-style: italic; background: #fff; border: 1px solid #cbd5e1; }
+                        .footer { margin-top: 10px; display: flex; justify-content: space-between; font-size: 9px; color: #64748b; page-break-inside: avoid; }
                     </style>
                 </head>
                 <body>
                     <div class="header">
                         <h1>GALLOP SPORTS MEET 2026-27</h1>
-                        <h2>GLPS MUNDEKARAD - Item, Gender & Class Wise Grid Report</h2>
+                        <h2>GLPS MUNDEKARAD - Compact Item, Gender & Class Wise Grid Report</h2>
                         <p>Generated on: ${new Date().toLocaleDateString()}</p>
                     </div>
 
@@ -718,7 +1008,9 @@
 
                         if (isLuckyCircle) {
                             const prePrimaryList = eventRegs.filter(r => isPrePrimaryClass(r.classRole));
-                            if (prePrimaryList.length === 0) return '';
+                            const uniquePrePrimary = Array.from(new Map(prePrimaryList.map(item => [item.studentName.trim().toUpperCase() + '-' + item.house, item])).values());
+                            
+                            if (uniquePrePrimary.length === 0) return '';
                             return `
                                 <div class="event-section">
                                     <div class="event-title">🎯 ${event} (Pre-Primary Only)</div>
@@ -727,21 +1019,27 @@
                                         <table>
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 8%;">#</th>
-                                                    <th style="width: 42%;">കുട്ടിയുടെ പേര് (Student Name)</th>
-                                                    <th style="width: 30%;">ഹൗസ് (House)</th>
-                                                    <th style="width: 20%;">ലിംഗം</th>
+                                                    <th style="width: 5%;">#</th>
+                                                    <th style="width: 38%;">കുട്ടിയുടെ പേര് (Student Name)</th>
+                                                    <th style="width: 25%;">ഹൗസ് (House)</th>
+                                                    <th style="width: 14%;">ലിംഗം</th>
+                                                    <th style="width: 18%;">സ്ഥാനം / മാർക്ക്</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                ${prePrimaryList.map((r, i) => `
-                                                    <tr>
-                                                        <td style="text-align: center;">${i+1}</td>
-                                                        <td><b>${r.studentName}</b></td>
-                                                        <td>${r.house}</td>
-                                                        <td>${r.gender}</td>
-                                                    </tr>
-                                                `).join('')}
+                                                ${uniquePrePrimary.map((r, i) => {
+                                                    const posKey = `${event}_${r.studentName}_${r.house}`;
+                                                    const savedPos = resultsData[posKey] || '';
+                                                    return `
+                                                        <tr>
+                                                            <td style="text-align: center;">${i+1}</td>
+                                                            <td><b>${r.studentName}</b></td>
+                                                            <td>${r.house}</td>
+                                                            <td>${r.gender}</td>
+                                                            <td><b>${savedPos}</b></td>
+                                                        </tr>
+                                                    `;
+                                                }).join('')}
                                             </tbody>
                                         </table>
                                     </div>
@@ -749,21 +1047,31 @@
                             `;
                         }
 
-                        const boyClass1_2 = eventRegs.filter(r => r.gender === 'Boy' && isClass1or2(r.classRole));
-                        const boyClass3_4 = eventRegs.filter(r => r.gender === 'Boy' && isClass3or4(r.classRole));
-                        const girlClass1_2 = eventRegs.filter(r => r.gender === 'Girl' && isClass1or2(r.classRole));
-                        const girlClass3_4 = eventRegs.filter(r => r.gender === 'Girl' && isClass3or4(r.classRole));
+                        const boyClass1_2_raw = eventRegs.filter(r => r.gender === 'Boy' && isClass1or2(r.classRole));
+                        const boyClass3_4_raw = eventRegs.filter(r => r.gender === 'Boy' && isClass3or4(r.classRole));
+                        const girlClass1_2_raw = eventRegs.filter(r => r.gender === 'Girl' && isClass1or2(r.classRole));
+                        const girlClass3_4_raw = eventRegs.filter(r => r.gender === 'Girl' && isClass3or4(r.classRole));
+
+                        const boyClass1_2 = Array.from(new Map(boyClass1_2_raw.map(item => [item.studentName.trim().toUpperCase() + '-' + item.house, item])).values());
+                        const boyClass3_4 = Array.from(new Map(boyClass3_4_raw.map(item => [item.studentName.trim().toUpperCase() + '-' + item.house, item])).values());
+                        const girlClass1_2 = Array.from(new Map(girlClass1_2_raw.map(item => [item.studentName.trim().toUpperCase() + '-' + item.house, item])).values());
+                        const girlClass3_4 = Array.from(new Map(girlClass3_4_raw.map(item => [item.studentName.trim().toUpperCase() + '-' + item.house, item])).values());
 
                         const renderRows = (list) => {
-                            if(list.length === 0) return `<tr><td colspan="4" class="no-data">കുട്ടികൾ രജിസ്റ്റർ ചെയ്തിട്ടില്ല</td></tr>`;
-                            return list.map((r, i) => `
-                                <tr>
-                                    <td style="text-align: center;">${i + 1}</td>
-                                    <td><b>${r.studentName}</b></td>
-                                    <td>${r.house}</td>
-                                    <td>${r.classRole}</td>
-                                </tr>
-                            `).join('');
+                            if(list.length === 0) return `<tr><td colspan="5" class="no-data">കുട്ടികൾ രജിസ്റ്റർ ചെയ്തിട്ടില്ല</td></tr>`;
+                            return list.map((r, i) => {
+                                const posKey = `${event}_${r.studentName}_${r.house}`;
+                                const savedPos = resultsData[posKey] || '';
+                                return `
+                                    <tr>
+                                        <td style="text-align: center;">${i + 1}</td>
+                                        <td><b>${r.studentName}</b></td>
+                                        <td>${r.house}</td>
+                                        <td>${r.classRole}</td>
+                                        <td><b>${savedPos}</b></td>
+                                    </tr>
+                                `;
+                            }).join('');
                         };
 
                         return `
@@ -773,7 +1081,7 @@
                                 <div class="sub-section">
                                     <div class="sub-title">ആൺകുട്ടികൾ (Boys) - ക്ലാസ് 1 & 2</div>
                                     <table>
-                                        <thead><tr><th style="width:8%;">#</th><th style="width:42%;">പേര്</th><th style="width:30%;">ഹൗസ്</th><th style="width:20%;">ക്ലാസ്സ്</th></tr></thead>
+                                        <thead><tr><th style="width:5%;">#</th><th style="width:38%;">പേര്</th><th style="width:25%;">ഹൗസ്</th><th style="width:14%;">ക്ലാസ്സ്</th><th style="width:18%;">സ്ഥാനം / മാർക്ക്</th></tr></thead>
                                         <tbody>${renderRows(boyClass1_2)}</tbody>
                                     </table>
                                 </div>
@@ -781,7 +1089,7 @@
                                 <div class="sub-section">
                                     <div class="sub-title">ആൺകുട്ടികൾ (Boys) - ക്ലാസ് 3 & 4</div>
                                     <table>
-                                        <thead><tr><th style="width:8%;">#</th><th style="width:42%;">പേര്</th><th style="width:30%;">ഹൗസ്</th><th style="width:20%;">ക്ലാസ്സ്</th></tr></thead>
+                                        <thead><tr><th style="width:5%;">#</th><th style="width:38%;">പേര്</th><th style="width:25%;">ഹൗസ്</th><th style="width:14%;">ക്ലാസ്സ്</th><th style="width:18%;">സ്ഥാനം / മാർക്ക്</th></tr></thead>
                                         <tbody>${renderRows(boyClass3_4)}</tbody>
                                     </table>
                                 </div>
@@ -789,7 +1097,7 @@
                                 <div class="sub-section">
                                     <div class="sub-title">പെൺകുട്ടികൾ (Girls) - ക്ലാസ് 1 & 2</div>
                                     <table>
-                                        <thead><tr><th style="width:8%;">#</th><th style="width:42%;">പേര്</th><th style="width:30%;">ഹൗസ്</th><th style="width:20%;">ക്ലാസ്സ്</th></tr></thead>
+                                        <thead><tr><th style="width:5%;">#</th><th style="width:38%;">പേര്</th><th style="width:25%;">ഹൗസ്</th><th style="width:14%;">ക്ലാസ്സ്</th><th style="width:18%;">സ്ഥാനം / മാർക്ക്</th></tr></thead>
                                         <tbody>${renderRows(girlClass1_2)}</tbody>
                                     </table>
                                 </div>
@@ -797,7 +1105,7 @@
                                 <div class="sub-section">
                                     <div class="sub-title">പെൺകുട്ടികൾ (Girls) - ക്ലാസ് 3 & 4</div>
                                     <table>
-                                        <thead><tr><th style="width:8%;">#</th><th style="width:42%;">പേര്</th><th style="width:30%;">ഹൗസ്</th><th style="width:20%;">ക്ലാസ്സ്</th></tr></thead>
+                                        <thead><tr><th style="width:5%;">#</th><th style="width:38%;">പേര്</th><th style="width:25%;">ഹൗസ്</th><th style="width:14%;">ക്ലാസ്സ്</th><th style="width:18%;">സ്ഥാനം / മാർക്ക്</th></tr></thead>
                                         <tbody>${renderRows(girlClass3_4)}</tbody>
                                     </table>
                                 </div>
@@ -809,12 +1117,12 @@
                         <span>Headmaster / Coordinator Sign</span>
                         <span>Official Sports Committee Seal</span>
                     </div>
-
-                    <script>window.onload = function() { window.print(); }<\/script>
                 </body>
                 </html>
             `);
             printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => { printWindow.print(); }, 500);
         }
 
         function showModal(title, desc, type='success') {
